@@ -10,19 +10,19 @@ maxHeightIn = 23
 maxWidthM = maxWidthIn * inToM
 maxHeightM = maxHeightIn * inToM
 
-charucoNSqVert = 10
+charucoNSqVert = 6 #10
 charucoSqSizeM = float(maxHeightM) / float(charucoNSqVert)
 charucoMarkerSizeM = charucoSqSizeM * 0.7
 # charucoNSqHoriz = int(maxWidthM / charucoSqSizeM)
-charucoNSqHoriz = 16
+charucoNSqHoriz = 9 #16
 
-# charucoDictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
-charucoDictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
+charucoDictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+#charucoDictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_100)
 charucoBoard = aruco.CharucoBoard_create(
     charucoNSqHoriz,
     charucoNSqVert,
-    charucoSqSizeM,
-    charucoMarkerSizeM,
+    .022, #.05275, #charucoSqSizeM,
+    .0167, #.0265, #charucoMarkerSizeM,
     charucoDictionary)
 
 perspectiveDictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
@@ -34,11 +34,11 @@ perspectiveBoard = aruco.CharucoBoard_create(
     perspectiveDictionary)
 
 markerDictionary = aruco.getPredefinedDictionary(aruco.DICT_5X5_50)
-markerSizeIn = 5
-markerSizeM = markerSizeIn * inToM
+#markerSizeIn = 5
+markerSizeM = 0.015 #markerSizeIn * inToM
 
 detectorParams = aruco.DetectorParameters_create()
-detectorParams.cornerRefinementMaxIterations = 500
-detectorParams.cornerRefinementMinAccuracy = 0.001
-detectorParams.adaptiveThreshWinSizeMin = 10
+detectorParams.cornerRefinementMaxIterations = 100
+detectorParams.cornerRefinementMinAccuracy = 0.01
+detectorParams.adaptiveThreshWinSizeMin = 3
 detectorParams.adaptiveThreshWinSizeMax = 10

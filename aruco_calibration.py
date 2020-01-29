@@ -10,7 +10,7 @@ import json
 import cv2
 
 from cv2 import aruco
-from imutils.video import VideoStream
+#from imutils.video import VideoStream
 
 from charuco import charucoBoard
 from charuco import charucoDictionary
@@ -26,6 +26,7 @@ def show_calibration_frame(frame):
     cv2.namedWindow("Calibration", cv2.WND_PROP_FULLSCREEN)
     cv2.setWindowProperty("Calibration", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
     cv2.imshow("Calibration", frame)
+
 
 
 def hide_calibration_frame(window="Calibration"):
@@ -52,28 +53,29 @@ def calibrate_camera():
     Calibrate our camera
     """
     required_count = 50
-    resolution = (960, 720)
-    stream = VideoStream(usePiCamera=True, resolution=resolution).start()
-    time.sleep(2)  # Warm up the camera
+    resolution = (640, 480)
+    cap = cv2.VideoCapture(2)
+    #stream = VideoStream(usePiCamera=True, resolution=resolution).start()
+    #time.sleep(2)  # Warm up the camera
 
     all_corners = []
     all_ids = []
 
     frame_idx = 0
-    frame_spacing = 5
+    frame_spacing = 10
     success = False
 
     calibration_board = charucoBoard.draw((1680, 1050))
     show_calibration_frame(calibration_board)
 
     while True:
-        frame = stream.read()
+        ret, frame = cap.read()
+        #frame = stream.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         marker_corners, marker_ids, _ = aruco.detectMarkers(
             gray,
-            charucoDictionary,
-            parameters=detectorParams)
+            charucoDictionary)
 
         if len(marker_corners) > 0 and frame_idx % frame_spacing == 0:
             ret, charuco_corners, charuco_ids = aruco.interpolateCornersCharuco(
@@ -87,7 +89,7 @@ def calibrate_camera():
                 all_ids.append(charuco_ids)
 
             aruco.drawDetectedMarkers(gray, marker_corners, marker_ids)
-        # cv2.imshow('frame', gray)  # If we're showing the calibration image, we can't preview
+        cv2.imshow('frame', gray)  # If we're showing the calibration image, we can't preview
 
         if cv2.waitKey(1) & 255 == ord('q'):
             break
@@ -137,7 +139,8 @@ def calibrate_camera():
             resolution,
             5)
         while True:
-            frame = stream.read()
+            ret, frame = cap.read()
+            #frame = stream.read()
             if mapx is not None and mapy is not None:
                 frame = cv2.remap(frame, mapx, mapy, cv2.INTER_LINEAR)
 
@@ -145,7 +148,8 @@ def calibrate_camera():
             if cv2.waitKey(1) & 255 == ord('q'):
                 break
 
-    stream.stop()
+    cap.release()
+    #stream.stop()
     cv2.destroyAllWindows()
 
 
