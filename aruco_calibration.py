@@ -36,25 +36,25 @@ def hide_calibration_frame(window="Calibration"):
     cv2.destroyWindow(window)
 
 
-def save_json(data):
+def save_json(data,camera_name):
     """
     Save our data object as json to the camera_config file
     :param data: data to  write to file
     """
-    filename = 'camera_config.json'
+    filename = camera_name+'_config.json'
     print('Saving to file: ' + filename)
     json_data = json.dumps(data)
     with open(filename, 'w') as f:
         f.write(json_data)
 
 
-def calibrate_camera():
+def calibrate_camera(camera_name):
     """
     Calibrate our camera
     """
     required_count = 50
     resolution = (640, 480)
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
     #stream = VideoStream(usePiCamera=True, resolution=resolution).start()
     #time.sleep(2)  # Warm up the camera
 
@@ -118,7 +118,7 @@ def calibrate_camera():
                 'camera_matrix': camera_matrix.tolist(),
                 'dist_coeffs': dist_coeffs.tolist(),
                 'err': err
-            })
+                },camera_name)
 
             print('...DONE')
         except Exception as e:
@@ -154,4 +154,4 @@ def calibrate_camera():
 
 
 if __name__ == "__main__":
-    calibrate_camera()
+    calibrate_camera('webcam')
